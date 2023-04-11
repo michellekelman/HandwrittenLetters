@@ -9,3 +9,7 @@
 ### Algorithm Approach:
 - Own Implementation
 - Neural Network models with different activation functions
+### To Use:
+- Download dataset from the link above
+- Copy the extracted files into the data folder
+- Run the code with `python main.py`
