@@ -9,7 +9,12 @@
 ### Algorithm Approach:
 - Own Implementation
 - Neural Network models with different activation functions
-### To Use:
-- Download dataset from the link above
-- Copy the extracted files into the data folder
-- Run the code with `python main.py`
+### How To Use:
+1. Clone our project
+2. Download the dataset from the Kaggle link above
+3. Copy the extracted data files into the project data folder
+4. Process the data: `python data.py`
+5. Run the different models:
+   1. Our Neural Network implementation: `python relu.py`
+   2. scikit Neural Network MLPClassifier(): `python s-relu.py`
+   3. Keras Convolutional Neural Network: `python k-relu.py`
