@@ -1,4 +1,5 @@
 # TRAIN AND TEST 2 MODELS WITH OUR NEURAL NETWORK IMPLEMENTATION
+# 1 Hidden Layer Neural Network implementation
 # Sources:
 # # http://neuralnetworksanddeeplearning.com/chap1.html#:~:text=The%20idea%20is%20to%20take,rules%20for%20recognizing%20handwritten%20digits.
 # # https://www.kaggle.com/code/sanwal092/3-layer-neural-network-from-scratch/notebook
@@ -89,18 +90,18 @@ if __name__ == '__main__':
 
     # one hot encoding for y train data
     ytrn1 = ytrn0.reshape(1, ytrn0.shape[0])
-    ytrn = np.eye(numClasses)[ytrn1-1]
+    ytrn = np.eye(numClasses)[ytrn1]
     ytrn = ytrn.T.reshape(numClasses, ytrn0.shape[0])
 
     # one hot encoding for y test data
     ytst1 = ytst0.reshape(1, ytst0.shape[0])
-    ytst = np.eye(numClasses)[ytst1-1]
+    ytst = np.eye(numClasses)[ytst1]
     ytst = ytst.T.reshape(numClasses, ytst0.shape[0])
 
     # input num: number of features in the dataset
     inputNum = 28*28
     # hidden num: number of nodes in hidden layer
-    hiddenNum = 100
+    hiddenNum = 300
     # output num: number of classes
     outputNum = numClasses
 
@@ -109,14 +110,12 @@ if __name__ == '__main__':
     model.fit(Xtrn, ytrn, epochs=1000, lr=0.1)
 
     # predictions
-    ytrn3 = ytrn0-1
-    ytst3 = ytst0-1
     y_pred_trn = model.predict(Xtrn)
     y_pred_tst = model.predict(Xtst)
 
     # scoring
-    error_trn = model.compute_error(ytrn3, y_pred_trn)
-    error_tst = model.compute_error(ytst3, y_pred_tst)
+    error_trn = model.compute_error(ytrn0, y_pred_trn)
+    error_tst = model.compute_error(ytst0, y_pred_tst)
     print("Train Error: ", error_trn)
     print("Test Error: ", error_tst)
     

@@ -15,6 +15,8 @@
 3. Copy the extracted data files into the project data folder
 4. Process the data: `python data.py`
 5. Run the different models:
-   1. Our Neural Network implementation: `python relu.py`
-   2. scikit Neural Network MLPClassifier(): `python s-relu.py`
-   3. Keras Convolutional Neural Network: `python k-relu.py`
+   1. 1 Hidden Layer Neural Network implementation: `python logistic-1.py`
+   2. 2 Hidden Layer Neural Network implementation: `python logistic-2.py`
+   3. 3 Hidden Layer Neural Network implementation: `python logistic-3.py`
+   4. scikit Neural Network MLPClassifier(): `python s-logistic.py`
+   5. Keras Convolutional Neural Network: `python k-logistic.py`
