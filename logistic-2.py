@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     # model
     model = NeuralNetwork(inputNum, hiddenNum1, hiddenNum2, outputNum)
-    model.fit(Xtrn, ytrn, epochs=100, lr=0.1)
+    model.fit(Xtrn, ytrn, epochs=1000, lr=0.1)
 
     # predictions
     y_pred_trn = model.predict(Xtrn)
