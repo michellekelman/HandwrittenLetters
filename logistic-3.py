@@ -10,6 +10,9 @@ import random
 np.random.seed(0)
 import warnings
 warnings.filterwarnings('ignore')
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
 class NeuralNetwork():
     def __init__(self, inputNum, hiddenNum1, hiddenNum2, hiddenNum3, outputNum):
@@ -85,16 +88,76 @@ class NeuralNetwork():
         y_pred = np.argmax(a4, axis=0)
         return y_pred
 
+    def confusion_matrix(self, y_true, y_pred, numClasses):
+        matrix = np.zeros((numClasses, numClasses))
+        for i in range(len(y_true)):
+            matrix[y_true[i], y_pred[i]] += 1
+        return matrix
+
     def compute_error(self, y_true, y_pred):
         error = (1.0/len(y_true)) * sum(y_true!=y_pred)
         return error
+    
+    def evaluation(self, matrix, numClasses, numPoints):
+        tpr = np.zeros(numClasses)
+        fpr = np.zeros(numClasses)
+        precision = np.zeros(numClasses)
+        recall = np.zeros(numClasses)
+        f1 = np.zeros(numClasses)
+        for i in range(numClasses):
+            tp = matrix[i, i]
+            fp = sum(matrix[j, i] for j in range(numClasses)) - tp
+            fn = sum(matrix[i, j] for j in range(numClasses)) - tp
+            tn = numPoints - tp - fp - fn
+            tpr[i] = tp / (tp+fn)
+            fpr[i] = fp / (fp+tn)
+            precision[i] = tp / (tp+fp)
+            recall[i] = tp / (tp+fn)
+            f1[i] = 2*precision[i]*recall[i] / (precision[i]+recall[i])
+        return tpr, fpr, precision, recall, f1
+    
+    def ROC(self, X, y_true, numClasses):
+        a1, a2, a3, a4 = self.forward(X)
+        y_pred = np.argmax(a4, axis=0)
+        y_dist = np.max(a4, axis=0)
+        ind = np.lexsort((-y_dist, y_pred))
+        j = 0
+        roc_areas = []
+        for i in range(numClasses):
+            tp = 0
+            fp = 0
+            fpt = 0
+            areas = np.array([0])
+            # tps = np.array([0])
+            # fps = np.array([0])
+            while j < len(y_true) and y_pred[ind[j]]==i:
+                while j < len(y_true) and y_pred[ind[j]]==i and y_pred[ind[j]]==y_true[ind[j]]:
+                    tp += 1
+                    j += 1
+                # tps = np.append(tps, tp)
+                # fps = np.append(fps, fpt)
+                while j < len(y_true) and y_pred[ind[j]]==i and y_pred[ind[j]]!=y_true[ind[j]]:
+                    fp += 1
+                    fpt += 1
+                    j += 1
+                # tps = np.append(tps, tp)
+                # fps = np.append(fps, fpt)
+                areas = np.append(areas, tp*fp)
+                fp = 0
+            areas = areas / (tp*fpt)
+            roc_areas = np.append(roc_areas, sum(areas))
+            # tps = tps / tp
+            # fps = fps / fpt
+            # plt.plot(fps, tps)
+            # plt.show()
+        return roc_areas
 
 if __name__ == '__main__':
     # nupmy option for debugging
     # np.set_printoptions(threshold=np.inf)
 
     # number of classes
-    numClasses = 10
+    numClasses = 47
 
     # loading data
     ytrn0 = np.load('numpy/ytrn.npy')
@@ -116,9 +179,9 @@ if __name__ == '__main__':
     # input num: number of features in the dataset
     inputNum = 28*28
     # hidden num: number of nodes in hidden layers
-    hiddenNum1 = 120
-    hiddenNum2 = 80
-    hiddenNum3 = 40
+    hiddenNum1 = 150
+    hiddenNum2 = 100
+    hiddenNum3 = 50
     # output num: number of classes
     outputNum = numClasses
 
@@ -131,12 +194,33 @@ if __name__ == '__main__':
     y_pred_tst = model.predict(Xtst)
 
     # scoring
+    # # # confusion matrices
+    cfm = model.confusion_matrix(ytst0, y_pred_tst, numClasses)
+    print("Matrix: ", cfm)
+    ax = sns.heatmap(cfm, annot=True, cmap="flare")
+
+    # # # accuracy
     error_trn = model.compute_error(ytrn0, y_pred_trn)
     error_tst = model.compute_error(ytst0, y_pred_tst)
-    print("Train Error: ", error_trn)
-    print("Test Error: ", error_tst)
+    print("Train Accuracy: ", 1-error_trn)
+    print("Test Accuracy: ", 1-error_tst)
     
-    # # # confusion matrices
-    # # # accuracy
     # # # TPR and FPR
+    tpr, fpr, precision, recall, f1 = model.evaluation(cfm, numClasses, len(ytst0))
+    print("TPR: ", tpr)
+    print("Average TPR: ", sum(tpr)/numClasses)
+    print("FPR: ", fpr)
+    print("Average FPR: ", sum(fpr)/numClasses)
+    print("Precision: ", precision)
+    print("Average Precision: ", sum(precision)/numClasses)
+    print("Recall: ", recall)
+    print("Average Recall: ", sum(recall)/numClasses)
+    print("F1: ", f1)
+    print("Average F1: ", sum(f1)/numClasses)
+
     # # # area under ROC curve
+    roc = model.ROC(Xtst, ytst0, numClasses)
+    print("ROC: ", roc)
+    print("Average ROC: ", sum(roc)/numClasses)
+
+    plt.show()

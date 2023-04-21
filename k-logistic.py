@@ -9,6 +9,11 @@ from keras.layers import Dense, Flatten, Conv2D, MaxPool2D
 from keras.optimizers import Adam
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 from keras.utils import to_categorical
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 # loading data
 ytrn = np.load('numpy/ytrn.npy')
@@ -29,7 +34,7 @@ Xtst = Xtst.reshape(Xtst.shape[0], Xtst.shape[1], Xtst.shape[2],1)
 print("New shape of train data: ", Xtst.shape)
 
 # number of classes
-numClasses = 10
+numClasses = 47
 
 # categorizing labels
 ytrnOHE = to_categorical(ytrn, num_classes = numClasses, dtype='int')
@@ -57,16 +62,61 @@ reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=1, min_lr
 early_stop = EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto')
 
 # predictions
-history = model.fit(Xtrn, ytrnOHE, epochs=1, callbacks=[reduce_lr, early_stop],  validation_data = (Xtst,ytstOHE))
+history = model.fit(Xtrn, ytrnOHE, epochs=1, callbacks=[reduce_lr, early_stop], validation_data=(Xtst, ytstOHE))
+ydist = model.predict(Xtst)
+ypred = np.argmax(ydist, axis=1)
 model.summary()
 
 # scoring
+# # # confusion matrices
+cfm = confusion_matrix(ytst, ypred)
+print("Matrix: ", cfm)
+ax = sns.heatmap(cfm, annot=True, cmap="flare")
+
+# # # accuracy
 print("The training accuracy is :", history.history['accuracy'])
 print("The testing accuracy is :", history.history['val_accuracy'])
 print("The training loss is :", history.history['loss'])
 print("The testing loss is :", history.history['val_loss'])
 
-# confusion matrices
-# accuracy
-# TPR and FPR
-# area under ROC curve
+# # # TPR and FPR
+def evaluation(matrix, numClasses, numPoints):
+    tpr = np.zeros(numClasses)
+    fpr = np.zeros(numClasses)
+    precision = np.zeros(numClasses)
+    recall = np.zeros(numClasses)
+    f1 = np.zeros(numClasses)
+    for i in range(numClasses):
+        tp = matrix[i, i]
+        fp = sum(matrix[j, i] for j in range(numClasses)) - tp
+        fn = sum(matrix[i, j] for j in range(numClasses)) - tp
+        tn = numPoints - tp - fp - fn
+        tpr[i] = tp / (tp+fn)
+        fpr[i] = fp / (fp+tn)
+        precision[i] = tp / (tp+fp)
+        recall[i] = tp / (tp+fn)
+        f1[i] = 2*precision[i]*recall[i] / (precision[i]+recall[i])
+    return tpr, fpr, precision, recall, f1
+
+tpr, fpr, precision, recall, f1 = evaluation(cfm, numClasses, len(ytst))
+print("TPR: ", tpr)
+print("Average TPR: ", sum(tpr)/numClasses)
+print("FPR: ", fpr)
+print("Average FPR: ", sum(fpr)/numClasses)
+print("Precision: ", precision)
+print("Average Precision: ", sum(precision)/numClasses)
+print("Recall: ", recall)
+print("Average Recall: ", sum(recall)/numClasses)
+print("F1: ", f1)
+print("Average F1: ", sum(f1)/numClasses)
+
+# # # area under ROC curve
+lb = LabelBinarizer()
+lb.fit(ytst)
+ytst_lb = lb.transform(ytst)
+ypred_lb = lb.transform(ypred)
+roc = roc_auc_score(ytst_lb, ypred_lb, average=None, multi_class='ovr')
+print("ROC: ", roc)
+print("Average ROC: ", sum(roc)/numClasses)
+
+plt.show()
