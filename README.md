@@ -15,6 +15,7 @@
 3. Copy the extracted data files into the project data folder
 4. Process the data: `python data.py`
 5. Run the different models:
+
 | **Activation Function**                | **Logistic (Sigmoid)** | **ReLU**           | **Hyperbolic Tangent** |
 | :------------------------------------: | :--------------------: | :----------------: | :--------------------: |
 | **1 Hidden Layers Neural Network**     | `python logistic-1.py` | `python relu-1.py` | `python tanh-1.py`     |
