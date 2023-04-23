@@ -1,4 +1,4 @@
-# TRAIN AND TEST 2 MODELS WITH SCIKIT_LEARN MIRRORING OUR NEURAL NETWORK IMPLEMENTATION
+# 1 Hidden Layer Scikit-Learn Neural Network with Hyperbolic Tangent Activation Function
 
 import numpy as np
 from sklearn.neural_network import MLPClassifier
@@ -28,7 +28,7 @@ def evaluation(matrix, numClasses, numPoints):
 
 if __name__ == '__main__':
     # number of classes
-    numClasses = 47
+    numClasses = 10
 
     # loading data
     ytrn = np.load('numpy/ytrn.npy')
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     # model
     # relu = MLPClassifier().fit(Xtrn, ytrn)
-    logistic = MLPClassifier(hidden_layer_sizes=(100,), activation='logistic', solver='sgd', learning_rate_init=0.1, max_iter=1000).fit(Xtrn, ytrn)
+    logistic = MLPClassifier(hidden_layer_sizes=(300,), activation='tanh', solver='sgd', learning_rate_init=0.1, max_iter=1000).fit(Xtrn, ytrn)
     print("Train successful")
     
     # predictions

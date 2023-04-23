@@ -4,8 +4,8 @@ import numpy as np
 
 if __name__ == '__main__':
     # loading data
-    train = np.genfromtxt('data/emnist-balanced-train.csv', missing_values=0, skip_header=0, delimiter=',', dtype=int)
-    test = np.genfromtxt('data/emnist-balanced-test.csv', missing_values=0, skip_header=0, delimiter=',', dtype=int)
+    train = np.genfromtxt('data/emnist-digits-train.csv', missing_values=0, skip_header=0, delimiter=',', dtype=int)
+    test = np.genfromtxt('data/emnist-digits-test.csv', missing_values=0, skip_header=0, delimiter=',', dtype=int)
     print("Number of examples in train:", len(train))
     print("Number of examples in test:", len(test))
 

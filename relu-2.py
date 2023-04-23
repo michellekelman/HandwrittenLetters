@@ -1,4 +1,4 @@
-# 3 Hidden Layer Neural Network implementation with Logistic Activation Function
+# 2 Hidden Layer Neural Network implementation with ReLU Activation Function
 # Sources:
 # # http://neuralnetworksanddeeplearning.com/chap1.html#:~:text=The%20idea%20is%20to%20take,rules%20for%20recognizing%20handwritten%20digits.
 # # https://www.kaggle.com/code/sanwal092/3-layer-neural-network-from-scratch/notebook
@@ -14,78 +14,68 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
 class NeuralNetwork():
-    def __init__(self, inputNum, hiddenNum1, hiddenNum2, hiddenNum3, outputNum):
-        self.layers = 5
+    def __init__(self, inputNum, hiddenNum1, hiddenNum2, outputNum):
+        self.layers = 4
         self.b1 = np.zeros((hiddenNum1, 1))
         self.w1 = np.random.randn(hiddenNum1, inputNum)*0.01
         self.b2 = np.zeros((hiddenNum2, 1))
         self.w2 = np.random.randn(hiddenNum2, hiddenNum1)*0.01
-        self.b3 = np.zeros((hiddenNum3, 1))
-        self.w3 = np.random.randn(hiddenNum3, hiddenNum2)*0.01
-        self.b4 = np.zeros((outputNum, 1))
-        self.w4 = np.random.randn(outputNum, hiddenNum3)*0.01
+        self.b3 = np.zeros((outputNum, 1))
+        self.w3 = np.random.randn(outputNum, hiddenNum2)*0.01
 
-    def sigmoid(self, x):
-        sigmoid = 1.0 / (1.0+np.exp(-x))
-        return sigmoid
+    def relu(self, x):
+        relu = np.maximum(np.zeros((x.shape[0], x.shape[1])), x)
+        return relu
     
     def forward(self, X):
         z1 = np.matmul(self.w1, X.T) + self.b1
-        a1 = self.sigmoid(z1)
+        a1 = self.relu(z1)
         z2 = np.matmul(self.w2, a1) + self.b2
-        a2 = self.sigmoid(z2)
+        a2 = self.relu(z2)
         z3 = np.matmul(self.w3, a2) + self.b3
-        a3 = self.sigmoid(z3)
-        z4 = np.matmul(self.w4, a3) + self.b4
-        a4 = self.sigmoid(z4)
-        return a1, a2, a3, a4
+        a3 = self.relu(z3)
+        return a1, a2, a3
     
-    def compute_loss(self, y, a4):
-        # loss_xi = np.multiply(y, np.log(a4)) + np.multiply((1.0-y), np.log(1.0-a4))
-        loss_xi = np.square(y-a4)
+    def compute_loss(self, y, a3):
+        loss_xi = np.square(y-a3)
         n = y.shape[1]
         loss = -(1.0/n) * np.sum(loss_xi)
         return loss
     
-    def backward(self, X, y, a1, a2, a3, a4):
-        error = a4-y
-        delta4 = error
-        delta3 = np.matmul(self.w4.T, delta4) * a3 * (1.0-a3)
+    def backward(self, X, y, a1, a2, a3):
+        error = a3-y
+        delta3 = error
         delta2 = np.matmul(self.w3.T, delta3) * a2 * (1.0-a2)
         delta1 = np.matmul(self.w2.T, delta2) * a1 * (1.0-a1)
         n = y.shape[1]
-        dw4 = (1.0/n) * np.matmul(delta4, a3.T)
-        db4 = (1.0/n) * np.sum(delta4, axis=1, keepdims=True)
         dw3 = (1.0/n) * np.matmul(delta3, a2.T)
         db3 = (1.0/n) * np.sum(delta3, axis=1, keepdims=True)
         dw2 = (1.0/n) * np.matmul(delta2, a1.T)
         db2 = (1.0/n) * np.sum(delta2, axis=1, keepdims=True)
         dw1 = (1.0/n) * np.matmul(delta1, X)
         db1 = (1.0/n) * np.sum(delta1, axis=1, keepdims=True)
-        return db1, dw1, db2, dw2, db3, dw3, db4, dw4
+        return db1, dw1, db2, dw2, db3, dw3
     
-    def gradient(self, db1, dw1, db2, dw2, db3, dw3, db4, dw4, lr):
+    def gradient(self, db1, dw1, db2, dw2, db3, dw3, lr):
         self.b1 = self.b1 - (lr * db1)
         self.w1 = self.w1 - (lr * dw1)
         self.b2 = self.b2 - (lr * db2)
         self.w2 = self.w2 - (lr * dw2)
         self.b3 = self.b3 - (lr * db3)
         self.w3 = self.w3 - (lr * dw3)
-        self.b4 = self.b4 - (lr * db4)
-        self.w4 = self.w4 - (lr * dw4)
     
     def fit(self, X, y, epochs=1000, lr=0.01):
         for i in range(epochs):
-            a1, a2, a3, a4 = self.forward(X)
-            loss = self.compute_loss(y, a4)
-            db1, dw1, db2, dw2, db3, dw3, db4, dw4 = self.backward(X, y, a1, a2, a3, a4)
-            self.gradient(db1, dw1, db2, dw2, db3, dw3, db4, dw4, lr)
+            a1, a2, a3 = self.forward(X)
+            loss = self.compute_loss(y, a3)
+            db1, dw1, db2, dw2, db3, dw3 = self.backward(X, y, a1, a2, a3)
+            self.gradient(db1, dw1, db2, dw2, db3, dw3, lr)
             if i % 10 == 0:
                 print("Epoch", i, "loss:", loss)
 
     def predict(self, X):
-        a1, a2, a3, a4 = self.forward(X)
-        y_pred = np.argmax(a4, axis=0)
+        a1, a2, a3 = self.forward(X)
+        y_pred = np.argmax(a3, axis=0)
         return y_pred
 
     def confusion_matrix(self, y_true, y_pred, numClasses):
@@ -117,9 +107,9 @@ class NeuralNetwork():
         return tpr, fpr, precision, recall, f1
     
     def ROC(self, X, y_true, numClasses):
-        a1, a2, a3, a4 = self.forward(X)
-        y_pred = np.argmax(a4, axis=0)
-        y_dist = np.max(a4, axis=0)
+        a1, a2, a3 = self.forward(X)
+        y_pred = np.argmax(a3, axis=0)
+        y_dist = np.max(a3, axis=0)
         ind = np.lexsort((-y_dist, y_pred))
         j = 0
         roc_areas = []
@@ -179,14 +169,13 @@ if __name__ == '__main__':
     # input num: number of features in the dataset
     inputNum = 28*28
     # hidden num: number of nodes in hidden layers
-    hiddenNum1 = 150
-    hiddenNum2 = 100
-    hiddenNum3 = 50
+    hiddenNum1 = 300
+    hiddenNum2 = 150
     # output num: number of classes
     outputNum = numClasses
 
     # model
-    model = NeuralNetwork(inputNum, hiddenNum1, hiddenNum2, hiddenNum3, outputNum)
+    model = NeuralNetwork(inputNum, hiddenNum1, hiddenNum2, outputNum)
     model.fit(Xtrn, ytrn, epochs=1000, lr=0.1)
 
     # predictions

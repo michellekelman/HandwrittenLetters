@@ -1,5 +1,4 @@
-# TRAIN AND TEST 2 MODELS WITH OUR NEURAL NETWORK IMPLEMENTATION
-# 2 Hidden Layer Neural Network implementation
+# 2 Hidden Layer Neural Network implementation with Logistic Activation Function
 # Sources:
 # # http://neuralnetworksanddeeplearning.com/chap1.html#:~:text=The%20idea%20is%20to%20take,rules%20for%20recognizing%20handwritten%20digits.
 # # https://www.kaggle.com/code/sanwal092/3-layer-neural-network-from-scratch/notebook
@@ -38,7 +37,8 @@ class NeuralNetwork():
         return a1, a2, a3
     
     def compute_loss(self, y, a3):
-        loss_xi = np.multiply(y, np.log(a3)) + np.multiply((1.0-y), np.log(1.0-a3))
+        # loss_xi = np.multiply(y, np.log(a3)) + np.multiply((1.0-y), np.log(1.0-a3))
+        loss_xi = np.square(y-a3)
         n = y.shape[1]
         loss = -(1.0/n) * np.sum(loss_xi)
         return loss
@@ -148,7 +148,7 @@ if __name__ == '__main__':
     # np.set_printoptions(threshold=np.inf)
 
     # number of classes
-    numClasses = 47
+    numClasses = 10
 
     # loading data
     ytrn0 = np.load('numpy/ytrn.npy')

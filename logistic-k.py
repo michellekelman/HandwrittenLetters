@@ -1,4 +1,4 @@
-# TRAIN AND TEST 2 MODELS WITH KERAS CONVOLUTIONAL NEURAL NETWOEK MIRRORING OUR NEURAL NETWORK IMPLEMENTATION
+# Keras Convolutional Neural Network with Logistic Activation Function
 # Sources:
 # # https://data-flair.training/blogs/handwritten-character-recognition-neural-network/
 
@@ -34,7 +34,7 @@ Xtst = Xtst.reshape(Xtst.shape[0], Xtst.shape[1], Xtst.shape[2],1)
 print("New shape of train data: ", Xtst.shape)
 
 # number of classes
-numClasses = 47
+numClasses = 10
 
 # categorizing labels
 ytrnOHE = to_categorical(ytrn, num_classes = numClasses, dtype='int')

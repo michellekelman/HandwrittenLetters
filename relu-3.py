@@ -1,4 +1,4 @@
-# 3 Hidden Layer Neural Network implementation with Logistic Activation Function
+# 3 Hidden Layer Neural Network implementation with ReLU Activation Function
 # Sources:
 # # http://neuralnetworksanddeeplearning.com/chap1.html#:~:text=The%20idea%20is%20to%20take,rules%20for%20recognizing%20handwritten%20digits.
 # # https://www.kaggle.com/code/sanwal092/3-layer-neural-network-from-scratch/notebook
@@ -25,23 +25,22 @@ class NeuralNetwork():
         self.b4 = np.zeros((outputNum, 1))
         self.w4 = np.random.randn(outputNum, hiddenNum3)*0.01
 
-    def sigmoid(self, x):
-        sigmoid = 1.0 / (1.0+np.exp(-x))
-        return sigmoid
+    def relu(self, x):
+        relu = np.maximum(np.zeros((x.shape[0], x.shape[1])), x)
+        return relu
     
     def forward(self, X):
         z1 = np.matmul(self.w1, X.T) + self.b1
-        a1 = self.sigmoid(z1)
+        a1 = self.relu(z1)
         z2 = np.matmul(self.w2, a1) + self.b2
-        a2 = self.sigmoid(z2)
+        a2 = self.relu(z2)
         z3 = np.matmul(self.w3, a2) + self.b3
-        a3 = self.sigmoid(z3)
+        a3 = self.relu(z3)
         z4 = np.matmul(self.w4, a3) + self.b4
-        a4 = self.sigmoid(z4)
+        a4 = self.relu(z4)
         return a1, a2, a3, a4
     
     def compute_loss(self, y, a4):
-        # loss_xi = np.multiply(y, np.log(a4)) + np.multiply((1.0-y), np.log(1.0-a4))
         loss_xi = np.square(y-a4)
         n = y.shape[1]
         loss = -(1.0/n) * np.sum(loss_xi)
@@ -157,7 +156,7 @@ if __name__ == '__main__':
     # np.set_printoptions(threshold=np.inf)
 
     # number of classes
-    numClasses = 10
+    numClasses = 47
 
     # loading data
     ytrn0 = np.load('numpy/ytrn.npy')

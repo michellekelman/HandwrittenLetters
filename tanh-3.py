@@ -1,4 +1,4 @@
-# 3 Hidden Layer Neural Network implementation with Logistic Activation Function
+# 3 Hidden Layer Neural Network implementation with Hyperbolic Tangent Activation Function
 # Sources:
 # # http://neuralnetworksanddeeplearning.com/chap1.html#:~:text=The%20idea%20is%20to%20take,rules%20for%20recognizing%20handwritten%20digits.
 # # https://www.kaggle.com/code/sanwal092/3-layer-neural-network-from-scratch/notebook
@@ -25,19 +25,19 @@ class NeuralNetwork():
         self.b4 = np.zeros((outputNum, 1))
         self.w4 = np.random.randn(outputNum, hiddenNum3)*0.01
 
-    def sigmoid(self, x):
-        sigmoid = 1.0 / (1.0+np.exp(-x))
-        return sigmoid
+    def tanh(self, x):
+        tanh = (np.exp(x)-np.exp(-x)) / (np.exp(x)+np.exp(-x))
+        return tanh
     
     def forward(self, X):
         z1 = np.matmul(self.w1, X.T) + self.b1
-        a1 = self.sigmoid(z1)
+        a1 = self.tanh(z1)
         z2 = np.matmul(self.w2, a1) + self.b2
-        a2 = self.sigmoid(z2)
+        a2 = self.tanh(z2)
         z3 = np.matmul(self.w3, a2) + self.b3
-        a3 = self.sigmoid(z3)
+        a3 = self.tanh(z3)
         z4 = np.matmul(self.w4, a3) + self.b4
-        a4 = self.sigmoid(z4)
+        a4 = self.tanh(z4)
         return a1, a2, a3, a4
     
     def compute_loss(self, y, a4):
