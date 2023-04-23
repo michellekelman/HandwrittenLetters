@@ -52,6 +52,10 @@ if __name__ == '__main__':
     cfm = confusion_matrix(ytst, ypred)
     print("Matrix: ", cfm)
     ax = sns.heatmap(cfm, annot=True, cmap="flare")
+    ax.set_title('Scikit-Learn Neural Network - Logistic Activation')
+    ax.set(xlabel="Predicted Class", ylabel="True Class")
+    ax.xaxis.set_label_position('top')
+    ax.xaxis.tick_top()
 
     # # # accuracy
     accuracy = logistic.score(Xtst, ytst)

@@ -187,6 +187,10 @@ if __name__ == '__main__':
     cfm = model.confusion_matrix(ytst0, y_pred_tst, numClasses)
     print("Matrix: ", cfm)
     ax = sns.heatmap(cfm, annot=True, cmap="flare")
+    ax.set_title('2 Hidden Layers - ReLU Activation')
+    ax.set(xlabel="Predicted Class", ylabel="True Class")
+    ax.xaxis.set_label_position('top')
+    ax.xaxis.tick_top()
 
     # # # accuracy
     error_trn = model.compute_error(ytrn0, y_pred_trn)

@@ -170,7 +170,7 @@ if __name__ == '__main__':
 
     # model
     model = NeuralNetwork(inputNum, hiddenNum, outputNum)
-    model.fit(Xtrn, ytrn, epochs=1000, lr=0.1)
+    model.fit(Xtrn, ytrn, epochs=100, lr=0.1)
 
     # predictions
     y_pred_trn = model.predict(Xtrn)
@@ -181,6 +181,10 @@ if __name__ == '__main__':
     cfm = model.confusion_matrix(ytst0, y_pred_tst, numClasses)
     print("Matrix: ", cfm)
     ax = sns.heatmap(cfm, annot=True, cmap="flare")
+    ax.set_title('1 Hidden Layer - Hyperbolic Tangent Activation')
+    ax.set(xlabel="Predicted Class", ylabel="True Class")
+    ax.xaxis.set_label_position('top')
+    ax.xaxis.tick_top()
 
     # # # accuracy
     error_trn = model.compute_error(ytrn0, y_pred_trn)
