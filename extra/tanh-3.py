@@ -197,7 +197,7 @@ if __name__ == '__main__':
     # # # confusion matrices
     cfm = model.confusion_matrix(ytst0, y_pred_tst, numClasses)
     print("Matrix: ", cfm)
-    ax = sns.heatmap(cfm, annot=True, cmap="flare")
+    ax = sns.heatmap(cfm, annot=True, fmt="g", cmap="flare")
     ax.set_title('3 Hidden Layers - Hyperbolic Tangent Activation')
     ax.set(xlabel="Predicted Class", ylabel="True Class")
     ax.xaxis.set_label_position('top')

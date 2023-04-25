@@ -71,7 +71,7 @@ model.summary()
 # # # confusion matrices
 cfm = confusion_matrix(ytst, ypred)
 print("Matrix: ", cfm)
-ax = sns.heatmap(cfm, annot=True, cmap="flare")
+ax = sns.heatmap(cfm, annot=True, fmt="g", cmap="flare")
 ax.set_title('Keras CNN - Logistic Activation')
 ax.set(xlabel="Predicted Class", ylabel="True Class")
 ax.xaxis.set_label_position('top')
