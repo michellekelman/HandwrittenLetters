@@ -7,7 +7,7 @@ np_config.enable_numpy_behavior()
 
 class PCA():
 
-    def Pca(self, X, y, num_components):
+    def Pca(self, X, num_components = 2):
 
         # move the center of the data to the origin
         X_meaned = X - np.mean(X, axis=0)
