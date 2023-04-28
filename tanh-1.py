@@ -44,7 +44,7 @@ class NeuralNetwork():
         error = a2-y
         # delta2 = error * a2 * (1.0-a2)
         delta2 = error
-        delta1 = np.matmul(self.w2.T, delta2) * a1 * (1.0-a1)
+        delta1 = np.matmul(self.w2.T, delta2) * (1.0-np.square(a1))
         n = y.shape[1]
         dw2 = (1.0/n) * np.matmul(delta2, a1.T)
         db2 = (1.0/n) * np.sum(delta2, axis=1, keepdims=True)
@@ -180,6 +180,7 @@ if __name__ == '__main__':
     # # # confusion matrices
     cfm = model.confusion_matrix(ytst0, y_pred_tst, numClasses)
     print("Matrix: ", cfm)
+    plt.figure(figsize=(10,8))
     ax = sns.heatmap(cfm, annot=True, fmt="g", cmap="flare")
     ax.set_title('1 Hidden Layer - Hyperbolic Tangent Activation')
     ax.set(xlabel="Predicted Class", ylabel="True Class")
