@@ -9,6 +9,7 @@
 ### Algorithm Approach:
 - Own Implementation
 - Neural Network models with different activation functions
+- Simple PCA and t-SNE methods with 2D and 3D plot functions
 ### How To Use:
 1. Clone our project
 2. Download the dataset from the Kaggle link above
@@ -28,3 +29,6 @@ Additional hidden layer models:
 | :-------------------------------------: | :--------------------------: | :----------------------: | :--------------------------: |
 | **2 Hidden Layer Neural Network**       | `python extra/logistic-2.py` | `python extra/relu-2.py` | `python extra/tanh-2.py`     |
 | **3 Hidden Layer Neural Network**       | `python extra/logistic-3.py` | `python extra/relu-3.py` | `python extra/tanh-3.py`     |
+
+6. Get the data in the hidden layer and output layer: run forward() function
+7. Run the PCA or t-SNE models 
